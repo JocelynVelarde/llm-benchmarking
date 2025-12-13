@@ -30,7 +30,7 @@ def call_llama(prompt):
     response_groq = groq_client.chat.completions.create(model='llama-3.1-8b-instant', 
                                                         messages=[{"role": "user", "content": prompt}], temperature=0.5)
     end = time.time()
-    content = response_groq.choices[0].message
+    content = response_groq.choices[0].message.content
     token_count = response_groq.usage.total_tokens
     return content, end - start, token_count
 
@@ -56,18 +56,21 @@ if prompt:
             st.subheader(comparision_name)
             if comparision_name == "Gemini 2.5 Flash":
                 content, latency, tokens = call_gemini(prompt)
-            else:
+            elif comparision_name == "Llama 3.1":
                 content, latency, tokens = call_llama(prompt)
-        st.caption(f"Latency: {latency:.2f} seconds | Tokens: {tokens}")
-        st.write(content)
 
-        if latency > 0:
-            results.append({
-                "Model": comparision_name,
-                "Latency (s)": latency,
-                "Tokens": tokens,
-                "Throughput (tokens/s)": tokens / latency
-            })
+            # Display latency and token count
+            st.caption(f"Latency: {latency:.2f} seconds | Tokens: {tokens}")
+            # Display the model's response
+            st.write(content)
+    
+            if latency > 0:
+                results.append({
+                    "Model": comparision_name,
+                    "Latency (s)": latency,
+                    "Tokens": tokens,
+                    "Throughput (tokens/s)": tokens / latency
+                })
     if results:
         df = pd.DataFrame(results)
         st.subheader("Benchmark Results")
