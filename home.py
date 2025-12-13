@@ -12,4 +12,15 @@ st.subheader("Compare as many LLMs as you want side by side")
 st.divider()
 
 client = genai.Client(api_key="")
-groq_client = Groq()
+groq_client = Groq(api_key="")
+
+def call_gemini(prompt):
+    start = time.time()
+    response = client.models.generate_content(model="gemini-2.5-flash", 
+                                              contents=prompt)
+    end = time.time()
+    if response.usage_metadata:
+        token_count = response.usage_metadata.total_token_count
+    else:
+        token_count = len(response.text) // 4
+    return response.text, end - start, token_count
