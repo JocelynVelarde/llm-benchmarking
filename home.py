@@ -24,3 +24,12 @@ def call_gemini(prompt):
     else:
         token_count = len(response.text) // 4
     return response.text, end - start, token_count
+
+def call_llama(prompt):
+    start = time.time()
+    response_groq = groq_client.chat.completions.create(model='llama-3.1-8b-instant', 
+                                                        messages=[{"role": "user", "content": prompt}], temperature=0.5)
+    end = time.time()
+    content = response_groq.choices[0].message
+    token_count = response_groq.usage.total_tokens
+    return content, end - start, token_count
