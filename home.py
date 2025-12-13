@@ -58,3 +58,21 @@ if prompt:
                 content, latency, tokens = call_gemini(prompt)
             else:
                 content, latency, tokens = call_llama(prompt)
+        st.caption(f"Latency: {latency:.2f} seconds | Tokens: {tokens}")
+        st.write(content)
+
+        if latency > 0:
+            results.append({
+                "Model": comparision_name,
+                "Latency (s)": latency,
+                "Tokens": tokens,
+                "Throughput (tokens/s)": tokens / latency
+            })
+    if results:
+        df = pd.DataFrame(results)
+        st.subheader("Benchmark Results")
+        st.dataframe(df)
+
+        fig = px.bar(df, x="Model", y="Throughput (tokens/s)", title="Model Throughput Comparison")
+        st.plotly_chart(fig, use_container_width=True)
+
