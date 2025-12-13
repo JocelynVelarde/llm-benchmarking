@@ -11,8 +11,8 @@ st.title("LLM Benchmarking")
 st.subheader("Compare as many LLMs as you want side by side")
 st.divider()
 
-client = genai.Client(api_key="")
-groq_client = Groq(api_key="")
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+groq_client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 def call_gemini(prompt):
     start = time.time()
