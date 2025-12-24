@@ -69,13 +69,22 @@ if prompt:
                     "Model": comparision_name,
                     "Latency (s)": latency,
                     "Tokens": tokens,
-                    "Throughput (tokens/s)": tokens / latency
+                    "Throughput (tokens/s)": tokens / latency,
+                    "Cost (USD)": (tokens / 1000) * 0.03 # Added cost calculation
                 })
     if results:
         df = pd.DataFrame(results)
         st.subheader("Benchmark Results")
         st.dataframe(df)
 
+        # Throughput Comparison Chart
         fig = px.bar(df, x="Model", y="Throughput (tokens/s)", title="Model Throughput Comparison")
         st.plotly_chart(fig, use_container_width=True)
 
+        # Added Latency Comparison Chart
+        fig = px.bar(df, x="Model", y="Latency (s)", title="Model Latency Comparison")
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Added Cost Comparison Chart
+        fig = px.bar(df, x="Model", y="Cost (USD)", title="Model Cost Comparison")
+        st.plotly_chart(fig, use_container_width=True)
